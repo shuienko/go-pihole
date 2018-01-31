@@ -98,10 +98,10 @@ type PiHQueries struct {
 }
 
 // Get performes API request. Returns slice of bytes.
-func (r *PiHConnector) Get(endpoint string) []byte {
-	var requestString = "http://" + r.Host + "/admin/api.php?" + endpoint
-	if r.Token != "" {
-		requestString += "&auth=" + r.Token
+func (ph *PiHConnector) Get(endpoint string) []byte {
+	var requestString = "http://" + ph.Host + "/admin/api.php?" + endpoint
+	if ph.Token != "" {
+		requestString += "&auth=" + ph.Token
 	}
 
 	resp, err := http.Get(requestString)
@@ -119,8 +119,8 @@ func (r *PiHConnector) Get(endpoint string) []byte {
 }
 
 // Type returns Pi-Hole API type as a PiHType object.
-func (r *PiHConnector) Type() PiHType {
-	bs := r.Get("type")
+func (ph *PiHConnector) Type() PiHType {
+	bs := ph.Get("type")
 	s := &PiHType{}
 
 	err := json.Unmarshal(bs, s)
@@ -131,8 +131,8 @@ func (r *PiHConnector) Type() PiHType {
 }
 
 // Version returns Pi-Hole API version as an object.
-func (r *PiHConnector) Version() PiHVersion {
-	bs := r.Get("version")
+func (ph *PiHConnector) Version() PiHVersion {
+	bs := ph.Get("version")
 	s := &PiHVersion{}
 
 	err := json.Unmarshal(bs, s)
@@ -143,8 +143,8 @@ func (r *PiHConnector) Version() PiHVersion {
 }
 
 // SummaryRaw returns Pi-Hole's raw summary statistics.
-func (r *PiHConnector) SummaryRaw() PiHSummaryRaw {
-	bs := r.Get("summaryRaw")
+func (ph *PiHConnector) SummaryRaw() PiHSummaryRaw {
+	bs := ph.Get("summaryRaw")
 	s := &PiHSummaryRaw{}
 
 	err := json.Unmarshal(bs, s)
@@ -155,8 +155,8 @@ func (r *PiHConnector) SummaryRaw() PiHSummaryRaw {
 }
 
 // Summary returns statistics in formatted style.
-func (r *PiHConnector) Summary() PiHSummary {
-	bs := r.Get("summary")
+func (ph *PiHConnector) Summary() PiHSummary {
+	bs := ph.Get("summary")
 	s := &PiHSummary{}
 
 	err := json.Unmarshal(bs, s)
@@ -167,8 +167,8 @@ func (r *PiHConnector) Summary() PiHSummary {
 }
 
 // TimeData returns PiHTimeData object which contains requests statistics.
-func (r *PiHConnector) TimeData() PiHTimeData {
-	bs := r.Get("overTimeData10mins")
+func (ph *PiHConnector) TimeData() PiHTimeData {
+	bs := ph.Get("overTimeData10mins")
 	s := &PiHTimeData{}
 
 	err := json.Unmarshal(bs, s)
@@ -179,8 +179,8 @@ func (r *PiHConnector) TimeData() PiHTimeData {
 }
 
 // Top returns top blocked and requested domains.
-func (r *PiHConnector) Top(n int) PiHTopItems {
-	bs := r.Get("topItems=" + strconv.Itoa(n))
+func (ph *PiHConnector) Top(n int) PiHTopItems {
+	bs := ph.Get("topItems=" + strconv.Itoa(n))
 	s := &PiHTopItems{}
 
 	err := json.Unmarshal(bs, s)
@@ -191,8 +191,8 @@ func (r *PiHConnector) Top(n int) PiHTopItems {
 }
 
 // Clients returns top clients.
-func (r *PiHConnector) Clients(n int) PiHTopClients {
-	bs := r.Get("topClients=" + strconv.Itoa(n))
+func (ph *PiHConnector) Clients(n int) PiHTopClients {
+	bs := ph.Get("topClients=" + strconv.Itoa(n))
 	s := &PiHTopClients{}
 
 	err := json.Unmarshal(bs, s)
@@ -203,8 +203,8 @@ func (r *PiHConnector) Clients(n int) PiHTopClients {
 }
 
 // ForwardDestinations returns forward destinations (DNS servers).
-func (r *PiHConnector) ForwardDestinations() PiHForwardDestinations {
-	bs := r.Get("getForwardDestinations")
+func (ph *PiHConnector) ForwardDestinations() PiHForwardDestinations {
+	bs := ph.Get("getForwardDestinations")
 	s := &PiHForwardDestinations{}
 
 	err := json.Unmarshal(bs, s)
@@ -215,8 +215,8 @@ func (r *PiHConnector) ForwardDestinations() PiHForwardDestinations {
 }
 
 // QueryTypes returns DNS query type and frequency as a PiHQueryTypes object.
-func (r *PiHConnector) QueryTypes() PiHQueryTypes {
-	bs := r.Get("getQueryTypes")
+func (ph *PiHConnector) QueryTypes() PiHQueryTypes {
+	bs := ph.Get("getQueryTypes")
 	s := &PiHQueryTypes{}
 
 	err := json.Unmarshal(bs, s)
@@ -227,8 +227,8 @@ func (r *PiHConnector) QueryTypes() PiHQueryTypes {
 }
 
 // Queries returns all DNS queries as a PiHQueries object.
-func (r *PiHConnector) Queries() PiHQueries {
-	bs := r.Get("getAllQueries")
+func (ph *PiHConnector) Queries() PiHQueries {
+	bs := ph.Get("getAllQueries")
 	s := &PiHQueries{}
 
 	err := json.Unmarshal(bs, s)
@@ -239,8 +239,8 @@ func (r *PiHConnector) Queries() PiHQueries {
 }
 
 // Enable enables Pi-Hole server.
-func (r *PiHConnector) Enable() error {
-	bs := r.Get("enable")
+func (ph *PiHConnector) Enable() error {
+	bs := ph.Get("enable")
 	resp := make(map[string]string)
 
 	err := json.Unmarshal(bs, &resp)
@@ -255,8 +255,8 @@ func (r *PiHConnector) Enable() error {
 }
 
 // Disable disables Pi-Hole server permanently.
-func (r *PiHConnector) Disable() error {
-	bs := r.Get("disable")
+func (ph *PiHConnector) Disable() error {
+	bs := ph.Get("disable")
 	resp := make(map[string]string)
 
 	err := json.Unmarshal(bs, &resp)
@@ -271,26 +271,26 @@ func (r *PiHConnector) Disable() error {
 }
 
 // RecentBlocked returns string with the last blocked DNS record.
-func (r *PiHConnector) RecentBlocked() string {
-	bs := r.Get("recentBlocked")
+func (ph *PiHConnector) RecentBlocked() string {
+	bs := ph.Get("recentBlocked")
 	return string(bs)
 }
 
 // Show returns 24h Summary of PiHole System.
-func (r *PiHSummaryRaw) Show() {
+func (ph *PiHSummaryRaw) Show() {
 	fmt.Println("=== 24h Summary:")
-	fmt.Printf("- Blocked Domains: %d\n", r.AdsBlocked)
-	fmt.Printf("- Blocked Percentage: %.2f%%\n", r.AdsPercentage)
-	fmt.Printf("- Queries: %d\n", r.DNSQueries)
-	fmt.Printf("- Clients Ever Seen: %d\n", r.ClientsEverSeen)
+	fmt.Printf("- Blocked Domains: %d\n", ph.AdsBlocked)
+	fmt.Printf("- Blocked Percentage: %.2f%%\n", ph.AdsPercentage)
+	fmt.Printf("- Queries: %d\n", ph.DNSQueries)
+	fmt.Printf("- Clients Ever Seen: %d\n", ph.ClientsEverSeen)
 }
 
 // ShowBlocked returns sorted top Blocked domains over last 24h.
-func (r *PiHTopItems) ShowBlocked() {
+func (ph *PiHTopItems) ShowBlocked() {
 	reverseMapBlocked := make(map[int]string)
 	var freqBlocked []int
 
-	for k, v := range r.Blocked {
+	for k, v := range ph.Blocked {
 		reverseMapBlocked[v] = k
 		freqBlocked = append(freqBlocked, v)
 	}
@@ -304,11 +304,11 @@ func (r *PiHTopItems) ShowBlocked() {
 }
 
 // ShowQueries returns sorted top queries over last 24h.
-func (r *PiHTopItems) ShowQueries() {
+func (ph *PiHTopItems) ShowQueries() {
 	reverseMapQueries := make(map[int]string)
 	var freqQueries []int
 
-	for k, v := range r.Queries {
+	for k, v := range ph.Queries {
 		reverseMapQueries[v] = k
 		freqQueries = append(freqQueries, v)
 	}
@@ -322,11 +322,11 @@ func (r *PiHTopItems) ShowQueries() {
 }
 
 // Show returns sorted top clients over last 24h.
-func (r *PiHTopClients) Show() {
+func (ph *PiHTopClients) Show() {
 	reverseMapClients := make(map[int]string)
 	var freqClients []int
 
-	for k, v := range r.Clients {
+	for k, v := range ph.Clients {
 		reverseMapClients[v] = k
 		freqClients = append(freqClients, v)
 	}
