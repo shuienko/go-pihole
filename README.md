@@ -1,4 +1,4 @@
-# go-pihole
+# go-pihole [![Go Report Card](https://goreportcard.com/badge/github.com/shuienko/go-pihole)](https://goreportcard.com/report/github.com/shuienko/go-pihole)
 Go client for Pi-Hole API v3.0+
 
 ## Documentation
