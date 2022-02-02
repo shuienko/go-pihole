@@ -35,7 +35,7 @@ func main() {
 	}
 
     // Get Pi-Hole Summary
-    summary := ph.SummaryRaw()
+    summary := ph.Summary()
     
     // Print AdsBlocked (last 24h)
     fmt.Println(summary.AdsBlocked)

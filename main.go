@@ -32,8 +32,8 @@ type PiHVersion struct {
 	Version float32 `json:"version"`
 }
 
-// PiHSummaryRaw contains raw Pi-Hole summary data.
-type PiHSummaryRaw struct {
+// PiHSummary contains Pi-Hole summary data.
+type PiHSummary struct {
 	AdsBlocked       int     `json:"ads_blocked_today"`
 	AdsPercentage    float64 `json:"ads_percentage_today"`
 	ClientsEverSeen  int     `json:"clients_ever_seen"`
@@ -44,20 +44,6 @@ type PiHSummaryRaw struct {
 	Status           string  `json:"status"`
 	UniqueClients    int     `json:"unique_clients"`
 	UniqueDomains    int     `json:"unique_domains"`
-}
-
-// PiHSummary contains Pi-Hole statistics in formatted style. All fields are strings.
-type PiHSummary struct {
-	AdsBlocked       string `json:"ads_blocked_today"`
-	AdsPercentage    string `json:"ads_percentage_today"`
-	ClientsEverSeen  string `json:"clients_ever_seen"`
-	DNSQueries       string `json:"dns_queries_today"`
-	DomainsBlocked   string `json:"domains_being_blocked"`
-	QueriesCached    string `json:"queries_cached"`
-	QueriesForwarded string `json:"queries_forwarded"`
-	Status           string `json:"status"`
-	UniqueClients    string `json:"unique_clients"`
-	UniqueDomains    string `json:"unique_domains"`
 }
 
 // PiHTimeData represents statistics over time.
@@ -134,18 +120,6 @@ func (ph *PiHConnector) Type() PiHType {
 func (ph *PiHConnector) Version() PiHVersion {
 	bs := ph.Get("version")
 	s := &PiHVersion{}
-
-	err := json.Unmarshal(bs, s)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return *s
-}
-
-// SummaryRaw returns Pi-Hole's raw summary statistics.
-func (ph *PiHConnector) SummaryRaw() PiHSummaryRaw {
-	bs := ph.Get("summaryRaw")
-	s := &PiHSummaryRaw{}
 
 	err := json.Unmarshal(bs, s)
 	if err != nil {
@@ -277,7 +251,7 @@ func (ph *PiHConnector) RecentBlocked() string {
 }
 
 // Show returns 24h Summary of PiHole System.
-func (ph *PiHSummaryRaw) Show() {
+func (ph *PiHSummary) Show() {
 	fmt.Println("=== 24h Summary:")
 	fmt.Printf("- Blocked Domains: %d\n", ph.AdsBlocked)
 	fmt.Printf("- Blocked Percentage: %.2f%%\n", ph.AdsPercentage)
