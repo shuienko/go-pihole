@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"sort"
@@ -34,16 +34,46 @@ type PiHVersion struct {
 
 // PiHSummary contains Pi-Hole summary data.
 type PiHSummary struct {
-	AdsBlocked       int     `json:"ads_blocked_today"`
-	AdsPercentage    float64 `json:"ads_percentage_today"`
-	ClientsEverSeen  int     `json:"clients_ever_seen"`
-	DNSQueries       int     `json:"dns_queries_today"`
-	DomainsBlocked   int     `json:"domains_being_blocked"`
-	QueriesCached    int     `json:"queries_cached"`
-	QueriesForwarded int     `json:"queries_forwarded"`
-	Status           string  `json:"status"`
-	UniqueClients    int     `json:"unique_clients"`
-	UniqueDomains    int     `json:"unique_domains"`
+	DomainsBeingBlocked  string             `json:"domains_being_blocked"`
+	DNSQueriesToday      string             `json:"dns_queries_today"`
+	AdsBlockedToday      string             `json:"ads_blocked_today"`
+	AdsPercentageToday   string             `json:"ads_percentage_today"`
+	UniqueDomains        string             `json:"unique_domains"`
+	QueriesForwarded     string             `json:"queries_forwarded"`
+	QueriesCached        string             `json:"queries_cached"`
+	ClientsEverSeen      string             `json:"clients_ever_seen"`
+	UniqueClients        string             `json:"unique_clients"`
+	DNSQueriesAllTypes   string             `json:"dns_queries_all_types"`
+	ReplyUNKNOWN         string             `json:"reply_UNKNOWN"`
+	ReplyNODATA          string             `json:"reply_NODATA"`
+	ReplyNXDOMAIN        string             `json:"reply_NXDOMAIN"`
+	ReplyCNAME           string             `json:"reply_CNAME"`
+	ReplyIP              string             `json:"reply_IP"`
+	ReplyDOMAIN          string             `json:"reply_DOMAIN"`
+	ReplyRRNAME          string             `json:"reply_RRNAME"`
+	ReplySERVFAIL        string             `json:"reply_SERVFAIL"`
+	ReplyREFUSED         string             `json:"reply_REFUSED"`
+	ReplyNOTIMP          string             `json:"reply_NOTIMP"`
+	ReplyOTHER           string             `json:"reply_OTHER"`
+	ReplyDNSSEC          string             `json:"reply_DNSSEC"`
+	ReplyNONE            string             `json:"reply_NONE"`
+	ReplyBLOB            string             `json:"reply_BLOB"`
+	DNSQueriesAllReplies string             `json:"dns_queries_all_replies"`
+	PrivacyLevel         string             `json:"privacy_level"`
+	Status               string             `json:"status"`
+	GravityLastUpdated   GravityLastUpdated `json:"gravity_last_updated"`
+}
+
+type GravityLastUpdated struct {
+	FileExists bool     `json:"file_exists"`
+	Absolute   int64    `json:"absolute"`
+	Relative   Relative `json:"relative"`
+}
+
+type Relative struct {
+	Days    int64 `json:"days"`
+	Hours   int64 `json:"hours"`
+	Minutes int64 `json:"minutes"`
 }
 
 // PiHTimeData represents statistics over time.
@@ -96,7 +126,7 @@ func (ph *PiHConnector) Get(endpoint string) []byte {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -253,10 +283,10 @@ func (ph *PiHConnector) RecentBlocked() string {
 // Show returns 24h Summary of PiHole System.
 func (ph *PiHSummary) Show() {
 	fmt.Println("=== 24h Summary:")
-	fmt.Printf("- Blocked Domains: %d\n", ph.AdsBlocked)
-	fmt.Printf("- Blocked Percentage: %.2f%%\n", ph.AdsPercentage)
-	fmt.Printf("- Queries: %d\n", ph.DNSQueries)
-	fmt.Printf("- Clients Ever Seen: %d\n", ph.ClientsEverSeen)
+	fmt.Printf("- Blocked Domains: %s\n", ph.AdsBlockedToday)
+	fmt.Printf("- Blocked Percentage: %s\n", ph.AdsPercentageToday)
+	fmt.Printf("- Queries: %s\n", ph.DNSQueriesToday)
+	fmt.Printf("- Clients Ever Seen: %s\n", ph.ClientsEverSeen)
 }
 
 // ShowBlocked returns sorted top Blocked domains over last 24h.
